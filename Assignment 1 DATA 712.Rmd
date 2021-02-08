@@ -1,0 +1,21 @@
+---
+title: "Assignment 1 DATA 712"
+author: "Michael Manigault"
+date: "2/3/2021"
+output: html_document
+---
+
+
+
+## What is Data Analytics?
+Data Analytics is a form of science that involves analyzing raw data in order to create conclusions about said data. It can help a business plan a course of action in response to the conclusions generated from the data. There are four steps in data analytics: determining the data requirements, collecting data, organizing said data and cleaning the data.
+
+
+## How Can Analytics Help Professional Sports?
+In regards to players' stats, data analytics are an effective way to gauge how good a player is. For example, in baseball, analytics come in the form of stats such as batting average or ERA (earned run average); if a batter's batting average is .300 or above or if a pitcher's ERA is 2.00 and below, they will be considered above average. Analytics can be used for other aspects of sports such as fan attendance (pre-COVID) and broadcasting. Owners of sports teams use analytics for business purposes such as expenses.
+
+
+
+
+## What is R and RStudio?
+R is a programming language used for statistical computing and graphics. R has been used by both data miners and statisticians since its release in August of 1993. It is also a software software environment. In regards to R's software, RStudio is a program that allows users to create projects using R. There are two different formats of RStudio. The first format of RStudio is RStudio Desktop; it is the actual desktop program that allows users to write code. The second format is RStudio Server; it allows users to access RStudio via a Web browser. RStudio was released February of 2011.
