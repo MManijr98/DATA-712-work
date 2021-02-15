@@ -1,0 +1,51 @@
+---
+title: "Assignment 2 DATA 712"
+author: "Michael Manigault"
+date: "2/9/2021"
+output: word_document
+---
+
+
+
+
+## What should the advertising campaign feature?
+The advertising campaign should feature ideologies Trump supporters agree with. The individuals within a demographic that are religious, White, and/or middle aged are most likely to vote for Trump. Those who oppose feminists, liberals, the LGBT, Muslims, the Black Lives Matter movement and undocumented immigration and support the police and big business are also likely to vote for Trump.
+
+
+
+
+## What analytical findings justify your conclusion?
+According to the findings, majority of the voters are White with Hispanic voters making up the second highest amount of voters. Based on the data revolving around voter age, voters aged 55 to 59 make up the majority with voters age 30 to 34 being the second highest. In regards to voters who support the police, 85% of them voted for Trump. Coincidentally, Trump supporters are least likely to support the Black Lives Matter movement with them making up 26% of voters. Only 49% and 43% voters Trump voters supported equal rights for lesbian, gay, bisexual people and transgender people, respectively. One of the major aspects of Trump's presidential campaign was bolstering border security and preventing illegal immigrants from entering US soil. As a result, 26% of Trump voters were against illegal immigration.
+
+
+
+```{r}
+rm(list=ls())
+gc()
+directory <-"C:/Users/Mike Jr/Downloads/"
+setwd(directory)
+library(readxl)
+install.packages("readxl")
+```
+
+```{r}
+data <- read_excel("C:/Users/Mike Jr/Downloads/ANES 2016.xlsx", sheet = 2)
+View(data)
+```
+
+
+
+```{r}
+library(descr)
+freq(data$feel.blm)
+```
+
+
+```{r}
+aggregate(feel.undoc ~ vote16, data = data, mean)
+```
+
+
+
+
+
