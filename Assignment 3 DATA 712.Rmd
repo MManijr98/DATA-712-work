@@ -1,0 +1,71 @@
+---
+title: "Assignment 3 DATA 712"
+author: "Michael Manigault"
+date: "2/17/2021"
+output: word_document
+---
+
+```{r}
+rm(list=ls())
+gc()
+directory <-"C:/Users/Mike Jr/Downloads/"
+setwd(directory)
+```
+```{r}
+library(readxl)
+data <- read_excel("C:/Users/Mike Jr/Downloads/WDIExtract1.xlsx", sheet = 2)
+View(data)
+```
+
+## Question 1: Univariate Distribution
+```{r}
+library(ggplot2)
+g1 <- ggplot(data = data, aes(x = poverty, y = murder))
+g1 + geom_point()
+```
+This scatter plot shows the relationship between murder rate and poverty within the countries in the dataset. According the scatter plot, both the murder rate and the poverty rate are gravitating towards 0.
+
+## Question 2: Bivariate Relationship between two discrete variables
+```{r}
+g2 <- aggregate(birthrate ~ inc.group, data = data, mean)
+ggplot(g2, aes(x=inc.group, y=birthrate)) + geom_bar(stat='identity')
+```
+This bar graph is comparing the birthrate of 3 different socioeconomic groups: they are high income (upper class/the rich), medium income (middle class) and low income (lower class/the poor). People living in lower income neighborhoods have the highest birthrate compared to those living in medium and high income neighborhoods.
+
+## Question 3: Bivariate Relationship
+```{r}
+g3 <- ggplot(data = data, aes(x = birthrate, y = poverty))
+g3 + geom_point() + geom_smooth()
+```
+This line graph and scatterplot show that there is a positive relationship between poverty rate and birthrate. As birthrate increases, poverty rate increases.
+
+## Question 4
+```{r}
+library(dplyr)
+
+wdi_Median_Murder <- data %>%
+
+filter(!is.na(gdppc),!is.na(murder),!is.na(internet)) %>%
+select(gdppc,murder,internet) %>%
+
+mutate(gdppc = case_when(
+  gdppc <=3000 ~ "Below $3,000",
+  gdppc >3000 & gdppc <= 10000 ~ "$3,000 - $10,000",
+  gdppc >10000 & gdppc <= 30000 ~ "$10,000 - $30,000",
+  gdppc >30000 & gdppc <= 50000 ~ "$30,000 - $50,000", 
+  gdppc >50000 ~ "Over $50,000"),
+  internet = case_when(
+  internet <= 25 ~ "very Low Access",
+  internet >= 26 & internet <= 50 ~ "Low Access",
+  internet >= 51 & internet < 75 ~ "High Access",
+  internet >=75 ~ "Very High Access"),
+  gdppc = factor(gdppc,
+                 levels=c("Below $3,000", "$3,000 - $10,000", "$10,000 - $30,000", "$10,000 - $30,000", "Over $50,000"))) %>%
+
+group_by(gdppc) %>%
+
+summarise(median_murder=median(murder))
+
+ggplot(wdi_Median_Murder, aes(x=gdppc, y=median_murder)) +geom_bar(stat='identity', fill="steelblue") + labs(title = "\nIs Murder More Common in Poorer Countries?", x= "\nPer Capita GDP", y= "Median Muder Rate Per 100,000") + scale_y_continous(breaks = seq(0, 100, by = .5))
+```
+
