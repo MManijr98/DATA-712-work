@@ -1,0 +1,66 @@
+---
+title: "Assignment 4 DATA 712"
+author: "Michael Manigault"
+date: "2/24/2021"
+output: html_document
+---
+
+```{r}
+rm(list=ls())
+gc()
+directory <-"C:/Users/Mike Jr/Downloads/"
+setwd(directory)
+```
+
+
+
+```{r}
+GSSExtract <- read.csv("C:/Users/Mike Jr/Downloads/GSSExtract.txt")
+GSSExtract
+```
+```{r}
+library(tidyr)
+data.tidy <- gather(GSSExtract, AGE, SEX, MARITAL)
+data.tidy
+```
+
+
+
+```{r}
+summary(GSSExtract)
+```
+
+```{r}
+prop.table(table(GSSExtract$SEX))
+```
+
+```{r}
+prop.table(table(GSSExtract$MARITAL))
+```
+
+```{r}
+prop.table(table(GSSExtract$DEGREE))
+```
+```{r}
+prop.table(table(GSSExtract$CONFINAN))
+```
+```{r}
+prop.table(table(GSSExtract$CONBUS))
+```
+
+## Question A
+The median age of the respondent is 50 years old.
+
+##Question B
+Approximately 55% of the sample is female.
+
+##Question C
+The proportion of high school dropouts is greater than the proportion of graduate school graduates.
+
+##Question D
+Approximately 17% of the respondents are divorced.
+
+##Question E
+CONFINAN has the highest proportion of people who have a "great deal" of faith in that institution. 
+
+
