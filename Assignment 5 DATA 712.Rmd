@@ -1,0 +1,52 @@
+---
+title: "Assignment 5 DATA 712"
+author: "Michael Manigault"
+date: "3/4/2021"
+output: word_document
+---
+
+```{r}
+rm(list=ls())
+gc()
+directory <-"C:/Users/Mike Jr/Downloads/"
+setwd(directory)
+```
+
+
+```{r}
+library(readxl)
+data <- read_excel("C:/Users/Mike Jr/Downloads/WDI Extract 2.xlsx", sheet = 2)
+View(data)
+```
+##Question 1
+
+
+```{r}
+summary(data$mort.mat)
+summary(data$gdp.pc)
+
+model.1<- lm(mort.mat ~ gdp.pc, data)
+summary(model.1)
+
+```
+The median error is -69.48. The intercept term is approximately 255 and the coefficient is approximately 0. The standard error is approximately 20. Both coefficients are significant. According to the model fit, this model is an effective way to show the relationship between maternal mortality rate and GDP.
+
+```{r}
+model.2<- lm(mort.mat ~ doctors, data)
+summary(model.2)
+```
+
+The median error is -37.45. The intercept term is approximately 299 and the coefficient is approximately -82. The standard error is approximately 8. Both coefficients are significant. According to the model fit, this model is an effective way to show the relationship between maternal mortality rate and the amount of doctors in a medical facility.
+
+```{r}
+model.3<- lm(mort.mat ~ hospbeds, data)
+summary(model.3)
+```
+The median error is -47.23. The intercept term is approximately 235 and the coefficient is approximately -38. The standard error is approximately 7. Both coefficients are significant.According to the model fit, this model is an effective way to show the relationship between maternal mortality rate and the amount of hospital beds in a medical facility.
+
+##Question 2 and 3
+```{r}
+model.4<- lm(mort.mat ~ hexp, data)
+summary(model.4)
+```
+The median error is -102.53. The intercept term is approximately 276 and the coefficient is approximately -15. The standard error is approximately 50. Both coefficients are significant.According to the model fit, this model is not an effective way to show the relationship between maternal mortality rate and the health expenditure.
