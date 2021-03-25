@@ -1,0 +1,85 @@
+---
+title: "Midterm DATA 712"
+author: "Michael Manigault"
+date: "3/13/2021"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r}
+rm(list=ls())
+gc()
+directory <-"C:/Users/Mike Jr/Desktop/"
+setwd(directory)
+```
+
+```{r}
+library(readr)
+rawdata <- read_csv("C:/Users/Mike Jr/Desktop/rawdata.txt")
+View(rawdata)
+```
+
+
+```{r}
+model.1<- lm(v161267 ~ v162105, rawdata)
+summary(model.1)
+```
+The median error is 1.177. The intercept term is approximately 47 and the coefficient is approximately 0.02. The standard error is approximately 0.41. In other words, as respondent's age increase, the model predicts that the support towards the upper class will increase by 0.41. Both coefficients are significant. According to the model fit, this model is an effective way to show the relationship between respondent age and feeling towards the upper class.
+
+
+
+```{r}
+library(MASS)
+resid.1 <-studres(model.1)
+summary(resid.1)
+```
+
+
+
+```{r}
+hist(resid.1)
+```
+
+
+```{r}
+mean.r1<- mean(resid.1)
+sd.r1<- sd(resid.1)
+hist(resid.1, freq = FALSE)
+curve(dnorm(x, mean=mean.r1, sd=sd.r1), add=TRUE)
+```
+
+```{r}
+qqnorm(resid.1)
+qqline(resid.1)
+```
+```{r}
+shapiro.test(resid.1)
+```
+```{r}
+p.1<-predict(model.1)
+std.p.1<-(p.1 - mean(p.1)/sd(p.1))
+r.1 <- resid(model.1)
+std.r.1 <- (r.1 - mean(r.1)/sd(r.1))
+plot(std.p.1, std.r.1, xlab = "Standardized Predicted Values", ylab = "Standardized Residuals")
+abline(0,0)
+```
+```{r}
+library(lmtest)
+bptest(model.1)
+```
+
+```{r}
+aggregate(v161267 ~ v162105, data = rawdata, mean)
+```
+
+```{r}
+library(descr)
+freq(rawdata$v161267)
+```
+```{r}
+library(ggplot2)
+g1 <- ggplot(data = rawdata, aes(x = v161267, y = v162105))
+g1 + geom_point()
+```
+According to this barchart, older individuals are in support of the upper class.Inversely, younger people are either apathetic or are not in support of the upper class.
