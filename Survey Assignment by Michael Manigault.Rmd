@@ -1,0 +1,134 @@
+---
+title: "Survey Assignment"
+author: "Michael Manigault"
+date: "4/7/2021"
+output: word_document
+---
+
+```{r}
+rm(list=ls())
+gc()
+directory <-"C:/Users/Mike Jr/Downloads/"
+setwd(directory)
+```
+
+
+```{r}
+DAT <- read.csv("C:/Users/Mike Jr/Downloads/GSS Extract 8.csv")
+DAT <- DAT[-c(1,17,36:60)]
+
+DAT$AGE <- ifelse(DAT$AGE > 97, NA, DAT$AGE)
+DAT$SEX <- factor(DAT$SEX, labels = c("Male", "Female"))
+DAT$RACE <- ifelse(DAT$RACE == 0, NA, DAT$RACE)
+DAT$RACE <- factor(DAT$RACE, labels = c("White", "Black", "Other"))
+temp <- c("DEGREE", "PADEG", "MADEG", "SPDEG")
+DAT[temp] <- lapply(DAT[temp], function(x) ifelse(x %in% c(7:9), 0, x))
+DAT[temp] <- lapply(DAT[temp], function(x) factor(x, 
+                                                  labels = c("Below High School",
+                                                             "High School", 
+                                                             "Junior College",
+                                                             "Bachelors", "Graduate")))
+DAT$DWELLING <- ifelse(DAT$DWELLING %in% c(0, 98, 99), NA, DAT$DWELLING)
+DAT$WORDSUM <- ifelse(DAT$WORDSUM %in% c(-1, 99), NA, DAT$WORDSUM)
+DAT$WRKSTAT <- ifelse(DAT$WRKSTAT %in% c(0,9), NA, DAT$WRKSTAT)
+DAT$WRKSTAT <- factor(DAT$WRKSTAT, labels = c("Working Full-Time", "Working Part-Time", 
+                                              "Temp Not Working","Unemployed", "Retired", 
+                                              "School", "Keeping House", "Other"))
+DAT$MARITAL <- ifelse(DAT$MARITAL == 9, NA, DAT$MARITAL)
+DAT$MARITAL <- factor(DAT$MARITAL, labels = c("Married", "Widowed", "Divorced", 
+                                              "Separated", "Never Married"))
+DAT$CHILDS <- ifelse(DAT$CHILDS == 9, NA, DAT$CHILDS)
+DAT$AGEKDBRN <- ifelse(DAT$AGEKDBRN > 97, NA, DAT$AGEKDBRN)
+DAT$REGION <- ifelse(DAT$REGION == 0, NA, DAT$REGION)
+DAT$REGION <- factor(DAT$REGION, labels = c("New England", "Mid Atlantic", "EN Central", 
+                                            "WN Central","South Atlantic", "ES Central", 
+                                            "WS Central", "Mountain", "Pacific"))
+DAT$SIZE <- ifelse(DAT$SIZE <= 0, NA, DAT$SIZE)
+DAT$PARTYID <- ifelse(DAT$PARTYID %in% c(7:9), NA, DAT$PARTYID)
+DAT$PARTYID <- factor(DAT$PARTYID, labels = c("Strong Dem", "Mod Dem", "Leans Dem", 
+                                              "Indep.", "Leans Rep", "Mod Rep",
+                                              "Strong"))
+temp <- names(DAT)[19:33]
+DAT[temp] <- lapply(DAT[temp], function(x) ifelse(x %in% c(0, 8, 9), NA, x))
+DAT[temp] <- lapply(DAT[temp], function(x) factor(x,  labels = c("Too Little", 
+                                                                 "About Right", 
+                                                                 "Too Much")))
+temp <- names(DAT)[34:46]
+DAT[temp] <- lapply(DAT[temp], function(x) ifelse(x %in% c(0, 8, 9), NA, x))
+DAT[temp] <- lapply(DAT[temp], function(x) factor(x, labels = c("A Great Deal", 
+                                                                "Only Some", 
+                                                                "Hardly Any")))
+temp <- names(DAT)[51:56]
+DAT[temp] <- lapply(DAT[temp], function(x) ifelse(x <= 0, NA, x))
+```
+
+
+
+```{r}
+library(survey)
+```
+
+
+
+```{r}
+gss.design <- svydesign(
+  ids = ~VPSU,
+  strata = ~VSTRAT,
+  data = DAT,
+  weights = ~WTSSALL,
+  nest = T)
+```
+
+
+
+
+```{r}
+summary(gss.design)
+```
+##Question 1
+```{r}
+gss.design.welfare <- subset(gss.design, NATFARE)
+```
+```{r}
+svymean(~NATFARE, gss.design, na.rm = T)
+svymean(~NATFARE, gss.design.welfare, na.rm = T)
+```
+
+```{r}
+model.1 <- 
+    svyglm(AGE ~ NATFARE + PARTYID, gss.design)
+
+summary(model.1)
+```
+Republicans are likely to be opposed to the government spending money on welfare due to the fact that they believe that people should trying to earn a decent living instead of rely on government handouts. According to this regression model, individuals who believe that the government uses too much money on welfare are on average years older than those who think that the government uses a moderate amount on money on welfare. On average, Republicans who believe the government overspends on welfare are 0.88 years older than Republicans who believe that the government spends a moderate amount of money on welfare.
+
+##Question 2
+```{r}
+gss.design.army <- subset(gss.design, CONARMY)
+```
+
+```{r}
+svymean(~CONARMY, gss.design, na.rm = T)
+svymean(~CONARMY, gss.design.army, na.rm = T)
+```
+```{r}
+model.2<- svyglm(AGE ~ CONARMY + PARTYID, gss.design)
+summary(model.2)
+```
+Republicans are likely to support the government being spent on the military due to the fact that they want the US military to maintain its reputation as the top military in the world. According to this regression model, individuals who believe that the government spends a moderate money on the military are on average years older than those who think that the government barely spends money on the military. On average, Republicans who believe the government spends enough money on the military are 0.16 years older than Republicans who believe that the government barely spends money on welfare.
+
+##Question 3
+```{r}
+gss.design.education <- subset(gss.design, NATEDUC)
+```
+```{r}
+svymean(~NATEDUC, gss.design, na.rm = T)
+svymean(~NATEDUC, gss.design.education, na.rm = T)
+```
+```{r}
+model.3 <- 
+    svyglm(AGE ~ NATEDUC + CHILDS, gss.design)
+
+summary(model.3)
+```
+According to this regression model, individuals who believe that the government spends a moderate money on education on average have less kids than those who think that the government spends too much money on education.
