@@ -1,0 +1,94 @@
+---
+title: "Final Project"
+author: "Michael Manigault"
+date: "4/19/2021"
+output: word_document
+---
+
+```{r}
+rm(list=ls())
+gc()
+directory <-"C:/Users/Mike Jr/Desktop/"
+setwd(directory)
+```
+
+```{r}
+library(readr)
+rawdata <- read_csv("C:/Users/Mike Jr/Desktop/GSS18.txt")
+View(rawdata)
+```
+
+As we get older, the prospect of starting a family becomes more and more prevalent. Parenthood usually occurs during and after college. Both partners, most are usually married, try their best to provide for the family. However, it can be difficult due to certain circumstances such as financial constraints, inability to find work, etc. Over time, the children will become adults and will eventually start families of their own, thus causing the cycle to repeat itself.
+
+##Variables Used
+The variables used for this project were AGE (age of respondent) and NATCHLD (Assistance for childcare). AGE is the independent Variable and NATCHLD is the dependent Variable. AGE is divided into different age groups, Gen Z (18-25), Millennial (26-38),  Gen X (39-54), Baby Boomer (53-73), and Silent Generation (74-99). NATCHLD responses were "IAP", "Too Little", "Just About Right", "Too Much", "Don't Know", and "NA".
+
+
+```{r}
+rawdata$AGE.grp <- cut(rawdata$AGE, c(18, 25, 38, 54, 73, 99), labels = c("Gen z", "Millennial", "Gex X", "Boomer", "Silent Generation"))
+rawdata$NATCHLD.grp <- cut(rawdata$NATCHLD, c(0, 1, 2, 3, 8, 9), labels = c("IAP", "Too Little", "Just About Right", "Too Much", "Don't Know", "NA"))
+
+```
+## Regression Model
+```{r}
+model.1<- lm(AGE ~ NATCHLD, rawdata)
+summary(model.1)
+
+```
+The median error is - 1.173. The intercept term is approximately 47 and the coefficient is approximately 0.89. The standard error is approximately 0.43. In other words, as respondent's age increase, the model predicts that the support towards the upper class will increase by 0.41. Both coefficients are significant. According to the model fit, this model is an effective way to show the relationship between respondent age and assistance with childcare.
+
+
+##Regression Diagnostics, just in case
+```{r}
+library(MASS)
+resid.1 <-studres(model.1)
+summary(resid.1)
+```
+
+```{r}
+hist(resid.1)
+```
+```{r}
+mean.r1<- mean(resid.1)
+sd.r1<- sd(resid.1)
+hist(resid.1, freq = FALSE)
+curve(dnorm(x, mean=mean.r1, sd=sd.r1), add=TRUE)
+```
+
+```{r}
+qqnorm(resid.1)
+qqline(resid.1)
+```
+
+```{r}
+shapiro.test(resid.1)
+```
+
+```{r}
+p.1<-predict(model.1)
+std.p.1<-(p.1 - mean(p.1)/sd(p.1))
+r.1 <- resid(model.1)
+std.r.1 <- (r.1 - mean(r.1)/sd(r.1))
+plot(std.p.1, std.r.1, xlab = "Standardized Predicted Values", ylab = "Standardized Residuals")
+abline(0,0)
+```
+
+```{r}
+library(lmtest)
+bptest(model.1)
+```
+## Univarate Variable Analysis and Visualation
+```{r}
+library(descr)
+freq(rawdata$AGE)
+```
+A frequency table used on age variable, which is the independent variable. The age of respondents range from 18 years old to 99 years old. According to the data, majority of the respondents were in their mid 30s (34 to be more specific).
+
+##Bivariate Variable Analysis and Visualation
+```{r}
+library(ggplot2)
+g1 <-ggplot(data = rawdata, aes(x = AGE, y = NATCHLD))
+g1 + geom_bar(stat = "identity") + labs(title = "\nRelationship Between Age Group and Assistance for childcare", x= "\nAge", y="\nAssistance for childcare")
+```
+According to this bar graph, assistance with childcare peaked in respondents in their late 20s and/or early 30s.
+As respondent age increased, the need for assistance in childcare decrease due to the respondent’s children being adults.
